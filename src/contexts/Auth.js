@@ -1,11 +1,12 @@
-import axios from "axios";
-import React, { createContext } from "react";
+import React, { createContext, useState } from "react";
 import { APIKey } from "../config/key";
 
 export const AuthContext = createContext({})
 
 export const AuthProvider = ({ children }) => {
     
+    const [userInfo, setUserInfo] = useState([])
+
     function createToken() {
         fetch(`
         https://api.themoviedb.org/3/authentication/token/new?api_key=${APIKey}`)
@@ -15,7 +16,7 @@ export const AuthProvider = ({ children }) => {
     };
 
     function requestSession() {
-        return (window.location.href = `https://www.themoviedb.org/authenticate/${localStorage.getItem("session_token")}?redirect_to=http://localhost:3000/Account`)
+        return (window.location.href = `https://www.themoviedb.org/authenticate/${localStorage.getItem("session_token")}?redirect_to=http://localhost:3000/Login`)
     }
 
     const createSession = () => {
@@ -34,10 +35,18 @@ export const AuthProvider = ({ children }) => {
         fetch(`https://api.themoviedb.org/3/authentication/session/new?api_key=${APIKey}`, init)
         .then(response => response.json())
         .then(data => {
-            localStorage.setItem("api", data.session_id); console.log(localStorage.api)
+            localStorage.setItem("api", data.session_id);
         })
         .catch(err => console.log(err))
+
+        getUserInfo()
     };
 
-    return <AuthContext.Provider value={{ createToken, requestSession, createSession }}>{children}</AuthContext.Provider>
+    function getUserInfo() {
+        fetch(`https://api.themoviedb.org/3/account?api_key=${APIKey}&session_id=${localStorage.getItem("api_id")}`)
+            .then(response => response.json())
+            .then(data => {setUserInfo(data)})
+    }
+
+    return <AuthContext.Provider value={{ userInfo, createToken, requestSession, createSession }}>{children}</AuthContext.Provider>
 }

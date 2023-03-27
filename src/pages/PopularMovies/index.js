@@ -1,5 +1,4 @@
 import React from 'react'
-import axios from 'axios';
 import { Container, MovieList, Movie } from './styles';
 import { useState, useEffect } from 'react'
 import { APIKey } from '../../config/key';
