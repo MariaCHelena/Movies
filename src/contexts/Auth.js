@@ -7,6 +7,8 @@ export const AuthProvider = ({ children }) => {
     
     const [userInfo, setUserInfo] = useState([])
 
+    const [isLogged, setIsLogged] = useState(false)
+
     function createToken() {
         fetch(`
         https://api.themoviedb.org/3/authentication/token/new?api_key=${APIKey}`)
@@ -39,6 +41,7 @@ export const AuthProvider = ({ children }) => {
         })
         .catch(err => console.log(err))
 
+        setIsLogged(true)
         getUserInfo()
     };
 
@@ -48,5 +51,5 @@ export const AuthProvider = ({ children }) => {
             .then(data => {setUserInfo(data)})
     }
 
-    return <AuthContext.Provider value={{ userInfo, createToken, requestSession, createSession }}>{children}</AuthContext.Provider>
+    return <AuthContext.Provider value={{ userInfo, isLogged, createToken, requestSession, createSession }}>{children}</AuthContext.Provider>
 }
