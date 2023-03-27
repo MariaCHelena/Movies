@@ -19,20 +19,24 @@ export const AuthProvider = ({ children }) => {
     }
 
     const createSession = () => {
-        axios.post(`https://api.themoviedb.org/3/authentication/session/new?api_key=${APIKey}`, {
+
+        const bodyConfig = {
             request_token: localStorage.getItem("session_token")
+        }
+
+        const init = {
+            method: "POST",
+            headers: {
+                "Content-type": "application/json"
+            },
+            body: JSON.stringify(bodyConfig)
+        }
+        fetch(`https://api.themoviedb.org/3/authentication/session/new?api_key=${APIKey}`, init)
+        .then(response => response.json())
+        .then(data => {
+            localStorage.setItem("api", data.session_id); console.log(localStorage.api)
         })
-        .then(response => {localStorage.setItem("session_id", response.session_id); console.log(response)})
         .catch(err => console.log(err))
-        /*
-            axios({
-            method: 'post',
-            url: `https://api.themoviedb.org/3/authentication/session/new?api_key=${APIKey}`,
-            data: {
-                request_token: token
-            }
-          }).then(response => console.log(response)).catch(err => console.log(err));
-        */
     };
 
     return <AuthContext.Provider value={{ createToken, requestSession, createSession }}>{children}</AuthContext.Provider>

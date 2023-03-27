@@ -7,13 +7,13 @@ const Account = () => {
     const { createSession } = useAuth()
 
     useEffect(() => {
-        console.log(sessionStorage)
+        createSession()
     }, [])
     
     return (
         <C.Container>
             Teste
-            <button onClick={createSession}>aaaaaaaaaa</button>
+            <button onClick={createSession}>aaaaaaaaaa</button> 
         </C.Container>
     )
 }
